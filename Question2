@@ -1,0 +1,40 @@
+'''
+QUESTION 2 — Interacting with Containers
+
+ACME Corporation wants to understand how live containers can be updated, modified, and reconfigured without stopping or rebuilding them.
+This includes interacting with the running container to copy files, update configuration, and reload the web service.
+
+TASK
+- Use the image: podman.io/library/nginx
+- The container must be named acme-demo-nginx
+- The container must run in detached mode
+- The container's port 80 must be exposed on local port 8002
+- After the container is running, copy the local directory from: /home/student/workspace/acme-nginx-web/html
+  into the container at /usr/share/nginx/html 
+- The container should utilize the configuration file available at /home/student/workspace/acme-nginx-web/conf/nginx.conf
+  and replace the existing file located at /etc/nginx/conf.d/default.conf
+- After applying the changes, run the command nginx -s reload inside the container to apply the configuration update
+'''
+
+SOLUTION
+- Navigate into the working directory: cd /home/student/workspace/acme-nginx-web
+- Confirm the index.html file exists: ls -la 
+- Check if the Nginx image already exists: podman images
+- If the image is missing, pull it: podman pull podman.io/library/nginx
+- Verify the image now exists: podman image | grep podman.io/library/nginx
+- Create and run the container with required configurations:
+      
+    podman run -d --name acme-demo-nginx -p 8002:80 \
+    -v /home/student/workspace/acme-nginx-web/html:/usr/share/nginx/html:Z \
+    -v /home/student/workspace/acme-nginx-web/conf/nginx.conf:Z \
+    podman.io/library/nginx
+      
+- Confirm that the container is running : podman ps | grep acme-demo-nginx
+- Confirm deployment : 
+    - curl http://acme-demo-nginx:80
+    - curl http://localhost:8002
+- Reload Nginx inside the container in a Non-interactive mode to apply config changes: 
+    - podman exec acme-demo-nginx nginx -s reload
+- confirm deployment after reload: 
+    - curl http://acme-demo-nginx:80
+    - curl http://localhost:8002
