@@ -1,0 +1,52 @@
+'''
+QUESTION 3 — Injecting Variables into Containers
+
+ACME Corporation wants to deploy multiple containers from the same image while customizing their behavior using environment variables.
+This task focuses on assigning unique environment values to each container during deployment and exposing the application externally.
+
+TASK
+- Use the image: quay.io/myacme/welcome
+- Deploy two containers named:
+  acme_nginx_container_1
+  acme_nginx_container_2
+- Configure environment variables for each container:
+    - For acme_nginx_container_1, set:
+      RESPONSE="Welcome_ACME_Nginx_Container_1"
+    - For acme_nginx_container_2, set:
+      RESPONSE="Welcome_ACME_Nginx_Container_2"
+- The containers must run in detached mode
+- The container’s port 8080 must be exposed on local port 8003
+'''
+
+SOLUTION
+- Ensure you are in the working directory as stated in the given exam question
+- Check if the required image already exists: podman images
+- If the image does not exist, pull it: podman pull quay.io/myacme/welcome
+- Confirm the image is now available: podman images | grep quay.io/myacme/welcome
+
+# Frist Container
+- Run the first container with its environment variable:
+    
+    podman run -d --name acme_nginx_container_1 \
+    -e RESPONSE="Welcome_ACME_Nginx_Container_1" \
+    -p 8003:8080 quay.io/myacme/welcome
+    
+- confirm the first container is running: podman ps | grep acme_nginx_container_1
+- Confirm the deployment of the first container and the output : 
+    - curl http://localhost:8003
+- stop the first container: podman stop acme_nginx_container_1
+- Confirm the first container is stopped: podman ps 
+
+# Second Container
+- run the second container :
+    
+     podman run -d --name acme_nginx_container_2 \
+     -e RESPONSE="Welcome_ACME_Nginx_Container_2" \
+    -p 8003:8080 quay.io/myacme/welcome
+    
+- Confirm the container is running: podman ps | grep acme_nginx_container_2
+- Confirm the deployment of the second container and the output : 
+    - curl http://localhost:8003
+- Stop the second container: podman stop acme_nginx_container_2
+- Confirm the second container is stopped: podman ps 
+    
