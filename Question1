@@ -1,0 +1,31 @@
+'''
+QUESTION 1 — Running Simple Containers
+
+ACME cooperation wants to demonstrate micro service for their software to use containers for their applications.
+As an initial demonstration, run the container should use nginx.
+
+TASK
+- Use the image: podman.io/library/nginx
+- The container must be named acme-demo-html
+- The container must run in detached mode
+- The container's port 80 must be exposed on local port 8001
+- The container should map the local file:
+'''
+
+SOLUTION
+- Navigate to the working directory: cd /home/student/workspace
+- Check if the Nginx image already exists locally: podman images
+- Pull the required image if it is not available: podman pull podman.io/library/nginx
+- Verify the image has been successfully downloaded: podman images
+- Create and run the container with the required configurations: 
+
+    podman run -d \
+    --name acme-demo-html \
+    -p 8001:80 \
+    -v /home/student/workspace/acme-nginx-html/index.html:/usr/share/nginx/html/index.html:Z \
+    podman.io/library/nginx
+
+- Confirm that the container is running: podman ps | acme-demo.html
+- Test and validate the container deployment: 
+    - curl http://acme-demo-html:80
+    - curl http://localhost:8001
