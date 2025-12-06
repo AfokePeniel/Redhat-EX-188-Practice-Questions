@@ -47,6 +47,5 @@ SOLUTION
 - Confirm the container is running: podman ps | grep acme_nginx_container_2
 - Confirm the deployment of the second container and the output : 
     - curl http://localhost:8003
-- Stop the second container: podman stop acme_nginx_container_2
-- Confirm the second container is stopped: podman ps 
+
     

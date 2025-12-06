@@ -9,11 +9,12 @@ TASK
 - The container must be named acme-demo-html
 - The container must run in detached mode
 - The container's port 80 must be exposed on local port 8001
-- The container should map the local file:
+- The container should map the local file: /home/student/workspace/acme-nginx-html/index.html
+
 '''
 
 SOLUTION
-- Navigate to the working directory: cd /home/student/workspace
+- Navigate to the working directory: cd /home/student/workspace/acme-nginx-html
 - Check if the Nginx image already exists locally: podman images
 - Pull the required image if it is not available: podman pull podman.io/library/nginx
 - Verify the image has been successfully downloaded: podman images
