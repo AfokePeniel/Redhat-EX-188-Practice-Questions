@@ -1,0 +1,76 @@
+'''
+QUESTION 4: Building Custom Container Image
+
+TASKS
+
+Task 1 on acme-db:
+- Build a custom image utilize the initial file available at the reference path
+/home/student/workspace/acme-mariadb-db/acme-mariadb-containerfile
+- Source for the container image is from mariadb
+- The container file should have build argument as below
+ACME_MARIADB_DATABASE
+ACME_MARIADB_PASSWORD
+- The container file should have environment variables as below
+  MARIADB_DATABASE
+  MARIADB_ROOT_PASSWORD
+- The environment variables should use the build arguments as below 
+  MARIADB_DATABASE uses ACME_MARIADB_DATABASE
+  MARIADB_ROOT_PASSWORD uses ACME_MARIADB_PASSWORD
+- Use these build arguments and should fetch its value from the user at build  
+  ACME_MARIADB_DATABASE=acme
+  ACME_MARIADB_PASSWORD=acme
+- The image must be locally available and tag as acme:5000/acme-mariadb:latest
+- Push the image to registry as acme:5000/acme-mariadb:latest
+
+Task 2 on acme-db-exporter:
+- Build a custom image as per the requirement below, utilize the initial file available at the reference path /home/student/workspace/acme-mariadb-db/acme-db-export-containerfile
+- Source for the Container image is from mariadb
+- Copy the file from scripts/export.sh in to /scripts in container
+- Working directory is /scripts
+- Run export.sh script
+- The image must be locally available and tag as acme-mariadb-export:latest
+- Push the image to registry as acme:5000/acme-mariadb-export:latest
+'''
+
+# SOLUTION TASK 1 on acme-db
+
+- Go into the working directory: cd /home/student/workspace/acme-mariadb-db
+- Create/Edit the containerfile: vi acme-mariadb-containerfile
+
+  FROM mariadb:latest
+
+  ARG ACME_MARIADB_DATABASE
+  ARG ACME_MARIADB_PASSWORD
+
+  ENV MARIADB_DATABASE=${ACME_MARIADB_DATABASE}
+  ENV MARIADB_ROOT_PASSWORD=${ACME_MARIADB_PASSWORD}
+
+- Build and Tag the image with the arguements:
+  podman build -t acme:5000/acme-mariadb:latest \
+  -f acme-mariadb-containerfile \
+  --build-arg ACME_MARIADB_DATABASE=acme \
+  --build-arg ACME_MARIADB_PASSWORD=acme  .
+
+- Confirm and Verify the built image: podman images | grep acme-mariadb
+- Push the image to the registry: podman push acme:5000/acme-mariadb:latest
+
+
+# SOLUTION TASK 2 on acme-db-exporter
+- Go into the working directory: cd /home/student/workspace/acme-mariadb-db
+- Confirm the Bash script exists and has executable permissions: ls -lR
+    # You should see: -rwxr-xr-x export.sh
+  And if it doesnt have executable permissions, add this is the containerfile, 
+  after the WORKDIR argument --> RUN chmod +x export.sh
+
+- Create/Edit the containerfile: vi acme-db-export-containerfile
+  
+  FROM mariadb:latest
+  COPY scripts/export.sh /scripts
+  WORKDIR /scripts
+  CMD ["./export.sh"]
+
+- Build and Tag the image:
+  podman build -t acme:5000/acme-mariadb-export:latest -f acme-db-export-containerfile .
+
+- Confirm and Verify the built image: podman images | grep acme-mariadb-export
+- Push the image to the registry: podman push acme:5000/acme-mariadb-export:latest
