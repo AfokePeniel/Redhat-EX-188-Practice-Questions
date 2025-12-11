@@ -16,7 +16,7 @@ TASK
 - After applying the changes, run the command nginx -s reload inside the container to apply the configuration update
 '''
 
-SOLUTION
+# SOLUTION
 - Navigate into the working directory: cd /home/student/workspace/acme-nginx-web
 - Check if the Nginx image already exists: podman images
 - If the image is missing, pull it: podman pull podman.io/library/nginx

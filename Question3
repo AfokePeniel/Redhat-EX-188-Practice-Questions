@@ -18,7 +18,7 @@ TASK
 - The container’s port 8080 must be exposed on local port 8003
 '''
 
-SOLUTION
+#SOLUTION
 - Ensure you are in the working directory as stated in the given exam question
 - Check if the required image already exists: podman images
 - If the image does not exist, pull it: podman pull quay.io/myacme/welcome

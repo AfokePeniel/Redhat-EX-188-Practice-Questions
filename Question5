@@ -1,0 +1,126 @@
+'''
+QUESTION 5: Multi-Container Stack
+Deploy a multi-container stack for WordPress with the following specification
+-	Create a network called acme-wp-net
+-	Create a volume named acme-wp-backend
+-	Create another volume named acme-wp-app
+-	Create another volume named acme_wordpress_data
+acme-wp-db
+-	Uses the image quay.io/myacme/mariadb:latest
+-	The container must be named mariadb
+-	The container should be part of the acme-wp-net network
+-	Map the volume acme-wp-backend to the container at the /bitnami/mariadb
+-	Use environment variables as 
+MARIADB_USER=acme_wordpress 
+MARIADB_PASSWORD=acme 
+MARIADB_DATABASE=acme_wordpress 
+MARIADB_ROOT_PASSWORD=acme
+-	Display the container to run persistently
+acme-nginx
+-	Uses the image quay.io/myacme/nginx
+-	The container must be named acme-wp-app
+-	Map the volume acme-wp-app to /etc/nginx inside the container
+-	The container's port 8080 must be export on local port 8080
+acme-wp-nginx
+-	Uses the image quay.io/myacme/wordpress:latest
+-	The container must be named acme-wordpress
+-	Add the container to acme-wp-net network
+-	Map the volume acme_wordpress_data to the container at the /bitnami/wordpress
+-	The container's port 8080 must be exposed on local port 8004
+-	The container's port 8443 must be exposed on local port 8443
+-	Use Environment variables as 
+WORDPRESS_DATABASE_USER=acme_wordpress 
+WORDPRESS_DATABASE_PASSWORD=acme
+WORDPRESS_DATABASE_NAME=acme_wordpress
+-	Deploy the container to run persistently.
+
+'''
+
+
+# SOLUTION
+
+- Change into the given working directory
+- Confirm the files exist: ls -l
+- Create the network:
+    podman network create acme-wp-net
+- Confirm network creation:
+    podman network ls
+
+- Create the volumes:
+    podman volume create acme-wp-backend
+    podman volume create acme-wp-app
+    podman volume create acme_wordpress_data
+
+- Confirm the volumes creation:
+    podman volume ls
+
+
+# First Container: acme-wp-db
+
+- Confirm the image exists:
+    podman images
+- Pull the image if not available:
+    podman pull quay.io/myacme/mariadb:latest
+- Confirm the image now exists:
+    podman images | grep mariadb
+
+- Create the container:
+    podman run -d --name mariadb --network acme-wp-net \
+      -v acme-wp-backend:/bitnami/mariadb:Z \
+      -e MARIADB_USER=acme_wordpress \
+      -e MARIADB_PASSWORD=acme \
+      -e MARIADB_DATABASE=acme_wordpress \
+      -e MARIADB_ROOT_PASSWORD=acme \
+      quay.io/myacme/mariadb:latest
+
+- Confirm container is running:
+    podman ps | grep mariadb
+
+
+# Second Container: acme-wp-app
+
+- Confirm the image exists:
+    podman images
+- Pull the image if not available:
+    podman pull quay.io/myacme/nginx
+- Confirm the image now exists:
+    podman images | grep nginx
+
+- Create the container:
+    podman run -d --name acme-wp-app \
+      -p 8080:8080 \
+      -v acme-wp-app:/etc/nginx:Z \
+      quay.io/myacme/nginx
+
+- Confirm the container is running:
+    podman ps | grep acme-wp-app
+
+- Confirm deployment:
+    curl http://localhost:8080
+
+
+# Third Container: acme-wp-nginx
+
+- Confirm the image exists:
+    podman images
+- Pull the image if not available:
+    podman pull quay.io/myacme/wordpress:latest
+- Confirm the image now exists:
+    podman images | grep wordpress
+
+- Create the container:
+    podman run -d --name acme-wordpress --network acme-wp-net \
+      -p 8004:8080 -p 8443:8443 \
+      -v acme_wordpress_data:/bitnami/wordpress:Z \
+      -e WORDPRESS_DATABASE_USER=acme_wordpress \
+      -e WORDPRESS_DATABASE_PASSWORD=acme \
+      -e WORDPRESS_DATABASE_NAME=acme_wordpress \
+      quay.io/myacme/wordpress:latest
+
+- Confirm the container is running:
+    podman ps | grep acme-wordpress
+
+- Confirm deployment:
+    curl http://localhost:8004
+    curl https://localhost:8443
+

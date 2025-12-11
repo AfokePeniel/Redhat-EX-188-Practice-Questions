@@ -13,7 +13,7 @@ TASK
 
 '''
 
-SOLUTION
+# SOLUTION
 - Navigate to the working directory: cd /home/student/workspace/acme-nginx-html
 - Check if the Nginx image already exists locally: podman images
 - Pull the required image if it is not available: podman pull podman.io/library/nginx
