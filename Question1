@@ -26,7 +26,7 @@ TASK
     -v /home/student/workspace/acme-nginx-html/index.html:/usr/share/nginx/html/index.html:Z \
     podman.io/library/nginx
 
-- Confirm that the container is running: podman ps | acme-demo.html
+- Confirm that the container is running: podman ps | acme-demo-html
 - Test and validate the container deployment: 
     - curl http://acme-demo-html:80
     - curl http://localhost:8001
