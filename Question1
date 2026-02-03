@@ -15,6 +15,7 @@ TASK
 
 # SOLUTION
 - Navigate to the working directory: cd /home/student/workspace/acme-nginx-html
+- Confirm the index.html file exists: ls -la
 - Check if the Nginx image already exists locally: podman images
 - Pull the required image if it is not available: podman pull podman.io/library/nginx
 - Verify the image has been successfully downloaded: podman images
@@ -26,7 +27,7 @@ TASK
     -v /home/student/workspace/acme-nginx-html/index.html:/usr/share/nginx/html/index.html:Z \
     podman.io/library/nginx
 
-- Confirm that the container is running: podman ps | acme-demo-html
+- Confirm that the container is running: podman ps | grep acme-demo-html
 - Test and validate the container deployment: 
     - curl http://acme-demo-html:80
     - curl http://localhost:8001

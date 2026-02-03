@@ -10,7 +10,7 @@ Configuration
         	acme-wp-app-ts 
 - Database Container: acme-wp-db-ts
     o	Use the image: quay.io/myacme/mariadb:latest 
-    o	Container name: mariadb-ts 
+    o	Container name: acme-wp-db-ts 
     o	Attach the container to the acme-troubleshoot network. 
     o	Map the volume acme-wp-backend-ts to /var/lib/mysql inside the container.
 - Nginx Container: acme-nginx-ts
@@ -41,12 +41,12 @@ Configuration
 - Pull image not avaliable: podman pull quay.io/myacme/mariadb:latest
 - Confirm images: podman images | grep mariadb
 - Create the database container with the correct MySQL mount path
-    podman run -d --name mariadb-ts \
+    podman run -d --name acme-wp-db-ts \
     --network acme-troubleshoot \
     -v acme-wp-backend-ts:/var/lib/mysql:Z \
     quay.io/myacme/mariadb:latest
 
-- Confirm container is running: podman ps
+- Confirm container is running: podman ps | grep acme-wp-db-ts
 
 # Nginx Container: acme-nginx-ts
 - Confirm the image exists: podman images

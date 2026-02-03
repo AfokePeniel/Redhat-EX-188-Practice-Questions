@@ -23,11 +23,13 @@ TASK
 - Verify the image now exists: podman image | grep podman.io/library/nginx
 - Create and run the container with required configurations:
       
-    podman run -d --name acme-demo-nginx -p 8002:80 \
-    -v /home/student/workspace/acme-nginx-web/html:/usr/share/nginx/html:Z \
-    -v /home/student/workspace/acme-nginx-web/conf/nginx.conf:/etc/nginx/conf.d/default.conf:Z \
+    podman run -d --name acme-demo-nginx \
+    -p 8002:80 \
     podman.io/library/nginx
-      
+- Copy html directory into running container:
+    podman cp /home/student/workspace/acme-nginx-web/html/.   acme-demo-nginx:/usr/share/nginx/html/
+- Copy config file into running container:
+    podman cp /home/student/workspace/acme-nginx-web/conf/nginx.conf  acme-demo-nginx:/etc/nginx/conf.d/default.conf
 - Confirm that the container is running : podman ps | grep acme-demo-nginx
 - Confirm deployment : 
     - curl http://acme-demo-nginx:80

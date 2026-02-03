@@ -42,7 +42,7 @@ TASK
     
      podman run -d --name acme_nginx_container_2 \
      -e RESPONSE="Welcome_ACME_Nginx_Container_2" \
-    -p 8003:8080 quay.io/myacme/welcome
+     -p 8003:8080 quay.io/myacme/welcome
     
 - Confirm the container is running: podman ps | grep acme_nginx_container_2
 - Confirm the deployment of the second container and the output : 

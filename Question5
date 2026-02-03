@@ -37,14 +37,24 @@ WORDPRESS_DATABASE_NAME=acme_wordpress
 '''
 
 
-# SOLUTION
+# EXPLANATION
+Architecture Logic:
+In a typical WordPress stack:
 
-- Change into the given working directory
+Nginx (acme-wp-app) = Web server / reverse proxy
+WordPress (acme-wordpress) = Application
+MariaDB (mariadb) = Database
+
+All 3 containers need to communicate with each other.
+
+# SOLUTION
+- Check and confirm the current working directory: pwd
+- Change into the given working directory: cd /home/student/workspace  
 - Confirm the files exist: ls -l
 - Create the network:
     podman network create acme-wp-net
 - Confirm network creation:
-    podman network ls
+    podman network ls | grep acme-wp-net
 
 - Create the volumes:
     podman volume create acme-wp-backend
@@ -52,7 +62,7 @@ WORDPRESS_DATABASE_NAME=acme_wordpress
     podman volume create acme_wordpress_data
 
 - Confirm the volumes creation:
-    podman volume ls
+    podman volume ls | grep acme
 
 
 # First Container: acme-wp-db
@@ -87,10 +97,10 @@ WORDPRESS_DATABASE_NAME=acme_wordpress
     podman images | grep nginx
 
 - Create the container:
-    podman run -d --name acme-wp-app \
-      -p 8080:8080 \
-      -v acme-wp-app:/etc/nginx:Z \
-      quay.io/myacme/nginx
+    podman run -d --name acme-wp-app --network acme-wp-net\
+    -p 8080:8080 \
+    -v acme-wp-app:/etc/nginx:Z \
+    quay.io/myacme/nginx
 
 - Confirm the container is running:
     podman ps | grep acme-wp-app
@@ -123,4 +133,7 @@ WORDPRESS_DATABASE_NAME=acme_wordpress
 - Confirm deployment:
     curl http://localhost:8004
     curl https://localhost:8443
+
+- Verify network connectivity to see all 3 containers connected:
+    podman network inspect acme-wp-net
 

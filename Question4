@@ -45,32 +45,36 @@ Task 2 on acme-db-exporter:
   ENV MARIADB_DATABASE=${ACME_MARIADB_DATABASE}
   ENV MARIADB_ROOT_PASSWORD=${ACME_MARIADB_PASSWORD}
 
-- Build and Tag the image with the arguements:
+- Build and Tag the image locally with the arguements:
+  
   podman build -t acme:5000/acme-mariadb:latest \
   -f acme-mariadb-containerfile \
   --build-arg ACME_MARIADB_DATABASE=acme \
   --build-arg ACME_MARIADB_PASSWORD=acme  .
 
 - Confirm and Verify the built image: podman images | grep acme-mariadb
+
+  Note: No need to tag again to the registry as both local and registry tags are the same
+
 - Push the image to the registry: podman push acme:5000/acme-mariadb:latest
 
 
 # SOLUTION TASK 2 on acme-db-exporter
-- Go into the working directory: cd /home/student/workspace/acme-mariadb-db
-- Confirm the Bash script exists and has executable permissions: ls -lR
-    # You should see: -rwxr-xr-x export.sh
-  And if it doesnt have executable permissions, add this is the containerfile, 
-  after the WORKDIR argument --> RUN chmod +x export.sh
 
+- Go into the working directory: cd /home/student/workspace/acme-mariadb-db
+- Confirm the container file and bash scripts exsits: ls -la
 - Create/Edit the containerfile: vi acme-db-export-containerfile
   
   FROM mariadb:latest
+
   COPY scripts/export.sh /scripts
+
   WORKDIR /scripts
-  CMD ["./export.sh"]
 
-- Build and Tag the image:
-  podman build -t acme:5000/acme-mariadb-export:latest -f acme-db-export-containerfile .
+  RUN chmod +x export.sh && ./export.sh
 
-- Confirm and Verify the built image: podman images | grep acme-mariadb-export
+
+- Build the image with local tag: podman build -t acme-mariadb-export:latest -f acme-db-export-containerfile .
+- Confirm and Verify the local image: podman images | grep acme-mariadb-export
+- Tag the image to the registry: podman tag acme-mariadb-export:latest acme:5000/acme-mariadb-export:latest
 - Push the image to the registry: podman push acme:5000/acme-mariadb-export:latest
