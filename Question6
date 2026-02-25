@@ -4,74 +4,69 @@ ACME Corporation has developed a new version of their multi-container applicatio
 All containers, volumes, and the network must persist after the completion of the task
 Configuration
 - Network and Volume Setup
-    o	Create a network called acme-troubleshoot 
-    o	Create the volumes named 
-        	acme-wp-backend-ts
-        	acme-wp-app-ts 
+    o Create a network called acme-troubleshoot
+    o Create the volumes named
+         acme-wp-backend-ts
+         acme-wp-app-ts
 - Database Container: acme-wp-db-ts
-    o	Use the image: quay.io/myacme/mariadb:latest 
-    o	Container name: acme-wp-db-ts 
-    o	Attach the container to the acme-troubleshoot network. 
-    o	Map the volume acme-wp-backend-ts to /var/lib/mysql inside the container.
+    o Use the image: quay.io/myacme/mariadb:latest
+    o Container name: acme-wp-db-ts
+    o Attach the container to the acme-troubleshoot network.
+    o Map the volume acme-wp-backend-ts to /var/lib/mysql inside the container.
 - Nginx Container: acme-nginx-ts
-    o	Use the image: quay.io/myacme/nginx 
-    o	Container name: acme-nginx-ts 
-    o	Attach the container to the acme-troubleshoot network
-- WordPress Container: acme-wp-nginx
-    o	Container name: acme-wordpress-ts 
-    o	Use the image: quay.io/myacme/wordpress:latest 
-    o	Attach the container to the acme-troubleshoot network.
+    o Use the image: quay.io/myacme/nginx
+    o Container name: acme-nginx-ts
+    o Attach the container to the acme-troubleshoot network
+- WordPress Container: acme-wordpress-ts
+    o Container name: acme-wordpress-ts
+    o Use the image: quay.io/myacme/wordpress:latest
+    o Attach the container to the acme-troubleshoot network.
 '''
 
 
 # SOLUTION
 
-- Change into the given directory
-- Confirm the files: ls -l
-- Create and confirm the network
-    podman network create acme-troubleshoot
-    podman network ls
-- Create and confirm the volumes
-    podman volume create acme-wp-backend-ts
-    podman volume create acme-wp-app-ts
-    podman volume ls
+- pwd
+- cd /home/student/workspace
+- ls -l
 
-#Database Container: acme-wp-db-ts
-- Confirm image exists: podman images
-- Pull image not avaliable: podman pull quay.io/myacme/mariadb:latest
-- Confirm images: podman images | grep mariadb
-- Create the database container with the correct MySQL mount path
-    podman run -d --name acme-wp-db-ts \
-    --network acme-troubleshoot \
-    -v acme-wp-backend-ts:/var/lib/mysql:Z \
-    quay.io/myacme/mariadb:latest
+# Create network
+- podman network create acme-troubleshoot
+- podman network ls
 
-- Confirm container is running: podman ps | grep acme-wp-db-ts
+# Create volumes
+- podman volume create acme-wp-backend-ts
+- podman volume create acme-wp-app-ts
+- podman volume ls
 
-# Nginx Container: acme-nginx-ts
-- Confirm the image exists: podman images
-- Pull the image if not available: podman pull quay.io/myacme/nginx
-- Confirm the image now exists: podman images | grep nginx
-- Create the container:
+# Database Container
+- podman images
+- podman pull quay.io/myacme/mariadb:latest
+- podman images | grep mariadb
+- podman run -d --name acme-wp-db-ts \
+  --network acme-troubleshoot \
+  -v acme-wp-backend-ts:/var/lib/mysql:Z \
+  quay.io/myacme/mariadb:latest
+- podman ps | grep acme-wp-db-ts
 
-    podman run -d --name acme-nginx-ts \
-    --network acme-troubleshoot \
-    quay.io/myacme/nginx
+# Nginx Container
+- podman images
+- podman pull quay.io/myacme/nginx
+- podman images | grep nginx
+- podman run -d --name acme-nginx-ts \
+  --network acme-troubleshoot \
+  quay.io/myacme/nginx
+- podman ps | grep acme-nginx-ts
 
-- Confirm the container is running: podman ps | grep acme-nginx-ts
+# WordPress Container
+- podman images
+- podman pull quay.io/myacme/wordpress:latest
+- podman images | grep wordpress
+- podman run -d --name acme-wordpress-ts \
+  --network acme-troubleshoot \
+  quay.io/myacme/wordpress:latest
+- podman ps | grep acme-wordpress-ts
 
-# WordPress Container: acme-wordpress-ts
-- Confirm the image exists: podman images
-- Pull the image if not available: podman pull quay.io/myacme/wordpress:latest
-- Confirm the image now exists: podman images | grep wordpress
-- Create Container: 
-    podman run -d --name acme-wordpress-ts \
-    --network acme-troubleshoot \
-    quay.io/myacme/wordpress:latest
-
-Confirm the container is running: podman ps
-
-# Final checks
-podman ps
-podman volume ls
-podman network inspect acme-troubleshoot
+# Final verification
+- podman ps
+- podman network inspect acme-troubleshoot
