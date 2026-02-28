@@ -66,12 +66,10 @@ Task 2 on acme-db-exporter:
 - Create/Edit the containerfile: vi acme-db-export-containerfile
   
   FROM mariadb:latest
-
   COPY scripts/export.sh /scripts
-
   WORKDIR /scripts
-
-  RUN chmod +x export.sh && ./export.sh
+  RUN chmod +x export.sh
+  CMD ["./export.sh"]
 
 
 - Build the image with local tag: podman build -t acme-mariadb-export:latest -f acme-db-export-containerfile .
